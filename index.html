@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Mensaje Para Ti ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1f122e 0%, #0b0c10 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            padding: 30px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pulsing Heart Animation */
+        .heart-container {
+            margin: 40px 0 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+        }
+
+        .heart {
+            background-color: #ff3366;
+            display: inline-block;
+            height: 60px;
+            position: relative;
+            transform: rotate(-45deg);
+            width: 60px;
+            box-shadow: 0 0 40px rgba(255, 51, 102, 0.6);
+            animation: heartbeat 1.4s infinite ease-in-out;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: "";
+            background-color: #ff3366;
+            border-radius: 50%;
+            height: 60px;
+            position: absolute;
+            width: 60px;
+        }
+
+        .heart:before {
+            top: -30px;
+            left: 0;
+        }
+
+        .heart:after {
+            top: 0;
+            left: 30px;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: rotate(-45deg) scale(1); filter: drop-shadow(0 0 10px rgba(255,51,102,0.6)); }
+            30% { transform: rotate(-45deg) scale(1.12); filter: drop-shadow(0 0 25px rgba(255,51,102,0.9)); }
+            60% { transform: rotate(-45deg) scale(1); filter: drop-shadow(0 0 10px rgba(255,51,102,0.6)); }
+            75% { transform: rotate(-45deg) scale(1.18); filter: drop-shadow(0 0 30px rgba(255,51,102,1)); }
+            100% { transform: rotate(-45deg) scale(1); filter: drop-shadow(0 0 10px rgba(255,51,102,0.6)); }
+        }
+
+        .message {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-style: italic;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #ff3366 0%, #ff5e62 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart-container">
+            <div class="heart"></div>
+        </div>
+        <p class="message" id="message">¡Escanea para escuchar nuestra canción! 🎵❤️</p>
+        <div id="player"></div>
+    </div>
+
+    <script>
+        // Parse query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const msg = urlParams.get('msg');
+        const song = urlParams.get('song');
+
+        if (msg) {
+            document.getElementById('message').innerText = decodeURIComponent(msg);
+        }
+
+        if (song) {
+            const decodedSong = decodeURIComponent(song);
+            let embedUrl = '';
+            
+            // Check for Spotify Track
+            if (decodedSong.includes('spotify.com/track/')) {
+                const trackId = decodedSong.split('track/')[1].split('?')[0];
+                embedUrl = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+            } 
+            // Check for Spotify Playlist
+            else if (decodedSong.includes('spotify.com/playlist/')) {
+                const playlistId = decodedSong.split('playlist/')[1].split('?')[0];
+                embedUrl = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
+            } 
+            // Check for Spotify Album
+            else if (decodedSong.includes('spotify.com/album/')) {
+                const albumId = decodedSong.split('album/')[1].split('?')[0];
+                embedUrl = `https://open.spotify.com/embed/album/${albumId}?utm_source=generator&theme=0`;
+            } 
+            // Check for YouTube
+            else if (decodedSong.includes('youtube.com/watch') || decodedSong.includes('youtu.be/')) {
+                let videoId = '';
+                if (decodedSong.includes('youtu.be/')) {
+                    videoId = decodedSong.split('youtu.be/')[1].split('?')[0];
+                } else {
+                    videoId = decodedSong.split('v=')[1].split('&')[0];
+                }
+                embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            }
+
+            if (embedUrl) {
+                const isYoutube = embedUrl.includes('youtube.com');
+                const height = isYoutube ? '240' : '352';
+                document.getElementById('player').innerHTML = `
+                    <div class="player-wrapper">
+                        <iframe src="${embedUrl}" width="100%" height="${height}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>`;
+            } else {
+                document.getElementById('player').innerHTML = `
+                    <a href="${decodedSong}" target="_blank" class="btn">Abrir Música 🎵</a>`;
+            }
+        }
+    </script>
+</body>
+</html>
